@@ -31,5 +31,11 @@ public class StudentAndGradeServiceTest {
 
         assertEquals("jmunoz@gmail.es", student.getEmailAddress(), "find by email");
     }
+
+    @Test
+    void isStudentNullCheck() {
+        // No existe el método (RED)
+        assertTrue(studentService.checkIfStudentIsNull(1));
+    }
 }
 
