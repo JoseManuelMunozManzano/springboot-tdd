@@ -58,7 +58,7 @@ public class StudentAndGradeServiceTest {
 
         assertTrue(deletedCollegeStudent.isPresent(), "Return True");
 
-        // El test falla porque el método no existe (RED)
+        // Creamos el método y ahora el test pasa (GREEN)
         studentService.deleteStudent(1);
 
         deletedCollegeStudent = studentDao.findById(1);
