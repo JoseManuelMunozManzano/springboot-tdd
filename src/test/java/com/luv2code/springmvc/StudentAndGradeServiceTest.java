@@ -11,6 +11,8 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 
+import java.util.Optional;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 // Con la anotación @TestPropertySource se cargan, durante los test, ficheros de properties
@@ -45,11 +47,23 @@ public class StudentAndGradeServiceTest {
 
     @Test
     void isStudentNullCheck() {
-        // Se crea el método en StudentAndGradeService y creamos datos de ejemplo en @BeforeEach y ahora pasa (GREEN)
-        // Los datos se borran en @AfterEach
         assertTrue(studentService.checkIfStudentIsNull(1));
 
         assertFalse(studentService.checkIfStudentIsNull(0));
+    }
+
+    @Test
+    void deleteStudentService() {
+        Optional<CollegeStudent> deletedCollegeStudent = studentDao.findById(1);
+
+        assertTrue(deletedCollegeStudent.isPresent(), "Return True");
+
+        // El test falla porque el método no existe (RED)
+        studentService.deleteStudent(1);
+
+        deletedCollegeStudent = studentDao.findById(1);
+
+        assertFalse(deletedCollegeStudent.isEmpty(), "Return False");
     }
 
     @AfterEach
