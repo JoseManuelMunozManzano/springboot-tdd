@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.context.jdbc.Sql;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -67,9 +68,13 @@ public class StudentAndGradeServiceTest {
         assertFalse(deletedCollegeStudent.isEmpty(), "Return False");
     }
 
+
+    // Se indica que, además de @BeforeEach, que siempre se va a ejecutar primero,
+    // coja datos del fichero resources/insertData.sql antes de ejecutar este test
+    @Sql("/insertData.sql")
     @Test
     void getGradebookService() {
-        // Test con error porque no existe el método (RED)
+        // Test funcionando (GREEN)
         Iterable<CollegeStudent> iterableCollegeStudents = studentService.getGradebook();
 
         List<CollegeStudent> collegeStudents = new ArrayList<>();
@@ -79,7 +84,7 @@ public class StudentAndGradeServiceTest {
             collegeStudents.add(collegeStudent);
         }
 
-        assertEquals(1, collegeStudents.size());
+        assertEquals(5, collegeStudents.size());
     }
 
     @AfterEach
