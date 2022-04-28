@@ -3,9 +3,12 @@ package com.luv2code.springmvc;
 import com.luv2code.springmvc.models.CollegeStudent;
 import com.luv2code.springmvc.repository.StudentDao;
 import com.luv2code.springmvc.service.StudentAndGradeService;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -15,18 +18,26 @@ import static org.junit.jupiter.api.Assertions.*;
 @SpringBootTest
 public class StudentAndGradeServiceTest {
 
+    // Una clase helper proporcionada por Spring Framework que nos permite ejecutar operaciones JDBC
+    @Autowired
+    private JdbcTemplate jdbc;
+
     @Autowired
     private StudentAndGradeService studentService;
 
     @Autowired
     private StudentDao studentDao;
 
+    @BeforeEach
+    void setupDatabase() {
+        jdbc.execute("INSERT INTO student(id, firstname, lastname, email_address) " +
+                "values(1, 'José Manuel', 'Muñoz', 'jmunoz@gmail.com')");
+    }
+
     @Test
     void createStudentService() {
-        // Se crea StudentAndGradeService y lo necesario para que el test pase (GREEN)
         studentService.createStudent("José Manuel", "Muñoz", "jmunoz@gmail.es");
 
-        // Se crea el método findByEmailAddress
         CollegeStudent student = studentDao.findByEmailAddress("jmunoz@gmail.es");
 
         assertEquals("jmunoz@gmail.es", student.getEmailAddress(), "find by email");
@@ -34,8 +45,16 @@ public class StudentAndGradeServiceTest {
 
     @Test
     void isStudentNullCheck() {
-        // No existe el método (RED)
+        // Se crea el método en StudentAndGradeService y creamos datos de ejemplo en @BeforeEach y ahora pasa (GREEN)
+        // Los datos se borran en @AfterEach
         assertTrue(studentService.checkIfStudentIsNull(1));
+
+        assertFalse(studentService.checkIfStudentIsNull(0));
+    }
+
+    @AfterEach
+    void setupAfterTransaction() {
+        jdbc.execute("DELETE FROM student");
     }
 }
 
