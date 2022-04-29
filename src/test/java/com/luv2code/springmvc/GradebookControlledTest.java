@@ -12,7 +12,11 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.TestPropertySource;
+import org.springframework.test.web.ModelAndViewAssert;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
+import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,6 +24,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @TestPropertySource("/application.properties")
 @AutoConfigureMockMvc
@@ -54,6 +59,17 @@ public class GradebookControlledTest {
         when(studentAndGradeServiceMock.getGradebook()).thenReturn(collegeStudentList);
 
         assertIterableEquals(collegeStudentList, studentAndGradeServiceMock.getGradebook());
+
+        // Petición a /
+        // El status es Ok
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/"))
+                .andExpect(status().isOk()).andReturn();
+
+        // Obtenemos el ModelAndView
+        ModelAndView mav = mvcResult.getModelAndView();
+
+        // El view debe ser "index"
+        ModelAndViewAssert.assertViewName(mav, "index");
     }
 
     @AfterEach
