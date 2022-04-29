@@ -4,13 +4,16 @@ import com.luv2code.springmvc.models.CollegeStudent;
 import com.luv2code.springmvc.models.GradebookCollegeStudent;
 import com.luv2code.springmvc.service.StudentAndGradeService;
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.ModelAndViewAssert;
 import org.springframework.test.web.servlet.MockMvc;
@@ -24,12 +27,16 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @TestPropertySource("/application.properties")
 @AutoConfigureMockMvc
 @SpringBootTest
 public class GradebookControlledTest {
+
+    // Estático porque se va a usar en el método estático @BeforeAll
+    private static MockHttpServletRequest request;
 
     @Autowired
     private JdbcTemplate jdbc;
@@ -39,6 +46,16 @@ public class GradebookControlledTest {
 
     @Mock
     private StudentAndGradeService studentAndGradeServiceMock;
+
+    @BeforeAll
+    static void setup() {
+        // Vamos a informar un request con datos
+        request = new MockHttpServletRequest();
+
+        request.setParameter("firstname", "Adriana");
+        request.setParameter("lastname", "Acosta");
+        request.setParameter("emailAddress", "adri@gmail.com");
+    }
 
     @BeforeEach
     void beforeEach() {
@@ -60,15 +77,26 @@ public class GradebookControlledTest {
 
         assertIterableEquals(collegeStudentList, studentAndGradeServiceMock.getGradebook());
 
-        // Petición a /
-        // El status es Ok
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/"))
                 .andExpect(status().isOk()).andReturn();
 
-        // Obtenemos el ModelAndView
         ModelAndView mav = mvcResult.getModelAndView();
 
-        // El view debe ser "index"
+        ModelAndViewAssert.assertViewName(mav, "index");
+    }
+
+    @Test
+    void createStudentHttpRequest() throws Exception {
+        // Esto hace un post pasando los parámetros. Espera un status Ok
+        MvcResult mvcResult = this.mockMvc.perform(post("/")
+                .contentType(MediaType.APPLICATION_JSON)
+                .param("firstname", request.getParameterValues("firstname"))
+                .param("lastname", request.getParameterValues("lastname"))
+                .param("emailAddress", request.getParameterValues("emailAddress"))
+        ).andExpect(status().isOk()).andReturn();
+
+        ModelAndView mav = mvcResult.getModelAndView();
+
         ModelAndViewAssert.assertViewName(mav, "index");
     }
 
