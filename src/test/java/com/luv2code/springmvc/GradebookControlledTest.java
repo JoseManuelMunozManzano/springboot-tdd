@@ -46,7 +46,7 @@ public class GradebookControlledTest {
     private MockMvc mockMvc;
 
     @Mock
-    private StudentAndGradeService studentAndGradeServiceMock;
+    private StudentAndGradeService studentCreateServiceMock;
 
     @Autowired
     private StudentDao studentDao;
@@ -77,9 +77,9 @@ public class GradebookControlledTest {
 
         List<CollegeStudent> collegeStudentList = new ArrayList<>(Arrays.asList(studentOne, studentTwo));
 
-        when(studentAndGradeServiceMock.getGradebook()).thenReturn(collegeStudentList);
+        when(studentCreateServiceMock.getGradebook()).thenReturn(collegeStudentList);
 
-        assertIterableEquals(collegeStudentList, studentAndGradeServiceMock.getGradebook());
+        assertIterableEquals(collegeStudentList, studentCreateServiceMock.getGradebook());
 
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get("/"))
                 .andExpect(status().isOk()).andReturn();
@@ -91,6 +91,14 @@ public class GradebookControlledTest {
 
     @Test
     void createStudentHttpRequest() throws Exception {
+        CollegeStudent studentOne = new CollegeStudent("José", "Muñoz",
+                "jmunoz@gmail.com");
+        List<CollegeStudent> collegeStudentList = new ArrayList<>(Arrays.asList(studentOne));
+
+        when(studentCreateServiceMock.getGradebook()).thenReturn(collegeStudentList);
+
+        assertIterableEquals(collegeStudentList, studentCreateServiceMock.getGradebook());
+
         // Esto hace un post pasando los parámetros. Espera un status Ok
         MvcResult mvcResult = this.mockMvc.perform(post("/")
                 .contentType(MediaType.APPLICATION_JSON)
