@@ -121,6 +121,16 @@ public class StudentAndGradeServiceTest {
         assertTrue(historyGrades.iterator().hasNext(), "Student has history grades");
     }
 
+    @Test
+    void createGradeServiceReturnFalse() {
+        // Fuera del rango 0-100
+        assertFalse(studentService.createGrade(105, 1, "math"));
+        assertFalse(studentService.createGrade(-5, 1, "math"));
+        // No existe studentId 2 (solo tenemos el 1)
+        assertFalse(studentService.createGrade(80.50, 2, "math"));
+        // Asignatura inválida
+        assertFalse(studentService.createGrade(80.50, 1, "literature"));
+    }
 
     @AfterEach
     void setupAfterTransaction() {
