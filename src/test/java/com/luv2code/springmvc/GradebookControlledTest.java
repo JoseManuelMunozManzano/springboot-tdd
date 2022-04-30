@@ -133,6 +133,19 @@ public class GradebookControlledTest {
         assertFalse(studentDao.findById(1).isPresent());
     }
 
+    @Test
+    void deleteStudentHttpRequestErrorPage() throws Exception {
+
+        // El id 0 no existe, así que el intento de borrarlo dará el error que queremos
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                .get("/delete/student/{id}", 0))
+                .andExpect(status().isOk()).andReturn();
+
+        ModelAndView mav = mvcResult.getModelAndView();
+
+        ModelAndViewAssert.assertViewName(mav, "error");
+    }
+
     @AfterEach
     void setupAfterTransaction() {
         jdbc.execute("DELETE FROM student");
