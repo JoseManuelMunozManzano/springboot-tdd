@@ -1,6 +1,7 @@
 package com.luv2code.springmvc;
 
 import com.luv2code.springmvc.models.CollegeStudent;
+import com.luv2code.springmvc.models.HistoryGrade;
 import com.luv2code.springmvc.models.MathGrade;
 import com.luv2code.springmvc.models.ScienceGrade;
 import com.luv2code.springmvc.repository.MathGradesDao;
@@ -103,14 +104,17 @@ public class StudentAndGradeServiceTest {
         // grade, id, type
         assertTrue(studentService.createGrade(80.50, 1, "math"));
         assertTrue(studentService.createGrade(80.50, 1, "science"));
+        assertTrue(studentService.createGrade(80.50, 1, "history"));
 
         // Get all grades with studentId
         Iterable<MathGrade> mathGrades = mathGradeDao.findGradeByStudentId(1);
         Iterable<ScienceGrade> scienceGrades = scienceGradeDao.findGradeByStudentId(1);
+        Iterable<HistoryGrade> historyGrades = historyGradeDao.findGradeByStudentId(1);
 
         // Verify there is grades
         assertTrue(mathGrades.iterator().hasNext(), "Student has math grades");
         assertTrue(scienceGrades.iterator().hasNext(), "Student has science grades");
+        assertTrue(historyGrades.iterator().hasNext(), "Student has history grades");
     }
 
 
