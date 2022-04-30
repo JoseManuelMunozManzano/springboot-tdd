@@ -178,6 +178,13 @@ public class StudentAndGradeServiceTest {
         assertEquals(1, gradebookCollegeStudent.getStudentGrades().getHistoryGradeResults().size());
     }
 
+    @Test
+    void studentInformationServiceReturnNull() {
+        GradebookCollegeStudent gradebookCollegeStudent = studentService.studentInformation(0);
+
+        assertNull(gradebookCollegeStudent);
+    }
+
     @AfterEach
     void setupAfterTransaction() {
         jdbc.execute("DELETE FROM student");
