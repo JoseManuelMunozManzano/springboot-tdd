@@ -65,7 +65,7 @@ public class StudentAndGradeServiceTest {
 
         deletedCollegeStudent = studentDao.findById(1);
 
-        assertFalse(deletedCollegeStudent.isEmpty(), "Return False");
+        assertFalse(deletedCollegeStudent.isPresent(), "Return False");
     }
 
 
