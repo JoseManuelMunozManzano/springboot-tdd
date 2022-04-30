@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -39,6 +41,9 @@ public class StudentAndGradeService {
 
     @Autowired
     private HistoryGradesDao historyGradeDao;
+
+    @Autowired
+    private StudentGrades studentGrades;
 
     public void createStudent(String firstName, String lastName, String emailAddress) {
         CollegeStudent student = new CollegeStudent(firstName, lastName, emailAddress);
@@ -144,6 +149,28 @@ public class StudentAndGradeService {
     }
 
     public GradebookCollegeStudent studentInformation(int id) {
-        return null;
+        Optional<CollegeStudent> student = studentDao.findById(id);
+        Iterable<MathGrade> mathGrades = mathGradeDao.findGradeByStudentId(id);
+        Iterable<ScienceGrade> scienceGrades = scienceGradeDao.findGradeByStudentId(id);
+        Iterable<HistoryGrade> historyGrades = historyGradeDao.findGradeByStudentId(id);
+
+        List<Grade> mathGradesList = new ArrayList<>();
+        mathGrades.forEach(mathGradesList::add);
+
+        List<Grade> scienceGradesList = new ArrayList<>();
+        scienceGrades.forEach(scienceGradesList::add);
+
+        List<Grade> historyGradesList = new ArrayList<>();
+        historyGrades.forEach(historyGradesList::add);
+
+        studentGrades.setMathGradeResults(mathGradesList);
+        studentGrades.setScienceGradeResults(scienceGradesList);
+        studentGrades.setHistoryGradeResults(historyGradesList);
+
+        GradebookCollegeStudent gradebookCollegeStudent = new GradebookCollegeStudent(student.get().getId(),
+                student.get().getFirstname(), student.get().getLastname(), student.get().getEmailAddress(),
+                studentGrades);
+
+        return gradebookCollegeStudent;
     }
 }
