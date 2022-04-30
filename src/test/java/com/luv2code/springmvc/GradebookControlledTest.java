@@ -2,6 +2,7 @@ package com.luv2code.springmvc;
 
 import com.luv2code.springmvc.models.CollegeStudent;
 import com.luv2code.springmvc.models.GradebookCollegeStudent;
+import com.luv2code.springmvc.repository.StudentDao;
 import com.luv2code.springmvc.service.StudentAndGradeService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeAll;
@@ -46,6 +47,9 @@ public class GradebookControlledTest {
 
     @Mock
     private StudentAndGradeService studentAndGradeServiceMock;
+
+    @Autowired
+    private StudentDao studentDao;
 
     @BeforeAll
     static void setup() {
@@ -98,6 +102,10 @@ public class GradebookControlledTest {
         ModelAndView mav = mvcResult.getModelAndView();
 
         ModelAndViewAssert.assertViewName(mav, "index");
+
+        CollegeStudent verifyStudent = studentDao.findByEmailAddress("adri@gmail.com");
+
+        assertNotNull(verifyStudent, "Student should be found");
     }
 
     @AfterEach
