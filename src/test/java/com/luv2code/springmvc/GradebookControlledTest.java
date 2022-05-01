@@ -302,6 +302,19 @@ public class GradebookControlledTest {
         ModelAndViewAssert.assertViewName(mav, "error");
     }
 
+    @Test
+    void deleteANonValidGradeHttpRequest() throws Exception {
+        // La asignatura literature no existe
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                .get("/grades/{id}/{gradeType}", 1, "literature"))
+                .andExpect(status().isOk()).andReturn();
+
+        // Se debe ir a la vista error
+        ModelAndView mav = mvcResult.getModelAndView();
+
+        ModelAndViewAssert.assertViewName(mav, "error");
+    }
+
     @AfterEach
     void setupAfterTransaction() {
         jdbc.execute(sqlDeleteStudent);
