@@ -284,6 +284,24 @@ public class GradebookControlledTest {
 
     }
 
+    @Test
+    void deleteAValidGradeHttpRequestStudentIdDoesNotExistEmptyResponse() throws Exception {
+        // El id 2 no existe
+        Optional<MathGrade> mathGrade = mathGradesDao.findById(2);
+
+        assertFalse(mathGrade.isPresent());
+
+        // Borrar grade (que no existe) con un HTTP Request Get
+        MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders
+                .get("/grades/{id}/{gradeType}", 2, "math"))
+                .andExpect(status().isOk()).andReturn();
+
+        // Se debe ir a la vista error
+        ModelAndView mav = mvcResult.getModelAndView();
+
+        ModelAndViewAssert.assertViewName(mav, "error");
+    }
+
     @AfterEach
     void setupAfterTransaction() {
         jdbc.execute(sqlDeleteStudent);
