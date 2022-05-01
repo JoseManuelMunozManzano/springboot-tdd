@@ -24,7 +24,8 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 // Con la anotación @TestPropertySource se cargan, durante los test, ficheros de properties
-@TestPropertySource("/application.properties")
+// Cambiamos al fichero de properties de test
+@TestPropertySource("/application-test.properties")
 @SpringBootTest
 public class StudentAndGradeServiceTest {
 

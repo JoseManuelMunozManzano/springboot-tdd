@@ -35,7 +35,8 @@ import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@TestPropertySource("/application.properties")
+// Cambiamos al fichero de properties de test
+@TestPropertySource("/application-test.properties")
 @AutoConfigureMockMvc
 @SpringBootTest
 public class GradebookControlledTest {
@@ -238,7 +239,7 @@ public class GradebookControlledTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .param("grade", "85.00")
                 .param("gradeType", "history")
-                .param("studentId", "")
+                .param("studentId", "0")
         ).andExpect(status().isOk()).andReturn();
 
         ModelAndView mav = mvcResult.getModelAndView();
